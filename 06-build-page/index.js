@@ -7,6 +7,10 @@ const bundleStyle = path.join(__dirname, 'project-dist', 'style.css');
 const mainFolder = path.join(__dirname, 'assets');
 const newFolder = path.join(__dirname, 'project-dist', 'assets')
 const indexHTMLPath = path.join(__dirname, 'project-dist', "index.html");
+const articles = path.join(__dirname, 'components/articles.html');
+const footer = path.join(__dirname, 'components/footer.html');
+const header = path.join(__dirname, 'components/header.html');
+const exemply = path.join(__dirname, 'template.html')
 
 fs.mkdir(projectFolder, (err) => {
   if (err) {
@@ -60,5 +64,36 @@ fs.readdir(folderStyles, (err, files) => {
       });
     });
   }
+
+  function addComponentsInIndex() {
+    try {
+      fs.readFile(articles, 'utf8', (err, articlesContent) => {
+        if (err) throw err;
+        fs.readFile(footer, 'utf8', (err, footerContent) => {
+          if (err) throw err;
+          fs.readFile(header, 'utf8', (err, headerContent) => {
+            if (err) throw err;
+            // console.log(articlesContent, footerContent, headerContent);
+            const template = fs.readFile(exemply, 'utf8', (err, templateContent) => {
+              if (err) throw err;
+            //   console.log(templateContent);
+              const replacedTemplate = templateContent
+                .replace(/{{header}}/g, headerContent)
+                .replace(/{{articles}}/g, articlesContent)
+                .replace(/{{footer}}/g, footerContent);
+              fs.writeFile(indexHTMLPath, replacedTemplate, (err) => {
+                if (err) throw err;
+                console.log('Готово НО НЕ ПОЛНОСТЬЮ  ох и намучился же я');
+              });
+            });
+          });
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  addComponentsInIndex();
 
 
